@@ -1,0 +1,119 @@
+int pink = 2;
+int green = 1;
+int orange = 0;
+int l_motor = 0;
+int r_motor = 3;
+int speed = 50; 
+int speed2 = 100;
+int veer = 6;
+int pause = 1250;
+int pause2 = 500;
+int pause3 = 10;
+int hand = 0;
+int eye = 3;
+int wave_left = 0;
+int wave_right = 2047;
+int wave_straight = 1024;
+int look = 2047;
+int back = 0;
+int eye_back = 1040;
+
+
+void forward(){
+   motor(l_motor,speed);//mvoe both motors forward 
+   motor(r_motor,-speed);
+}
+void backwards(){
+   motor(l_motor,-speed);//mvoe both motors forward 
+   motor(r_motor,speed);
+   msleep(pause);
+   ao();
+}
+void l_turn(){
+   motor(l_motor, speed);
+   motor(r_motor, speed);
+}
+void r_turn(){
+   motor(l_motor,-speed);//mvoe both motors forward 
+   motor(r_motor,-speed);
+   msleep(pause);
+}
+void r_veer(){
+    motor(l_motor,speed);
+    motor(r_motor,veer);
+}
+void l_veer(){
+    motor(l_motor,veer);
+    motor(r_motor,speed);
+}
+void green_time(){
+ enable_servos();
+    set_servo_position(hand,wave_right);
+    disable_servos();
+    msleep(pause3);
+}
+void pink_time(){
+ enable_servos();
+    set_servo_position(hand,wave_left);
+    disable_servos();
+    msleep(pause3);
+}
+void orange_time(){
+ enable_servos();
+    set_servo_position(hand,wave_left);
+    set_servo_position(hand,wave_right);
+    set_servo_position(hand,wave_left);
+    set_servo_position(hand,wave_right);
+    set_servo_position(hand,wave_left);
+    set_servo_position(hand,wave_right);
+    disable_servos();
+    msleep(pause3);
+}
+void watch(){
+    enable_servos();
+    set_servo_position(eye,look);
+    msleep(pause2);
+    disable_servos();
+    
+}
+void get_data(){
+     camera_update();
+    printf("numberofgreen=%d\n",get_object_count(green));
+            printf("Xofgreen=%d\n",get_object_center_x(green,0));
+            printf("Yofgreen=%d\n",get_object_center_y(green,0));
+    printf("numberoforange=%d\n",get_object_count(orange));
+    		printf("Xoforange=%d\n",get_object_center_x(orange,0));
+    		printf("Yoforange=%d\n",get_object_center_y(orange,0));
+    printf("numberofpink=%d\n",get_object_count(pink));
+    		printf("Xofpink=%d\n",get_object_center_x(pink,0));
+    		printf("Yofpink=%d\n",get_object_center_y(pink,0));
+}
+int main()
+{
+    int iteration_count = 0;
+    int update_errors = 0;
+    while(1){
+        camera_open();
+    get_data();
+        watch();
+        if(get_object_count(pink)>=1){
+            pink_time();
+            printf("pink\n");
+    }
+        else{
+         if(get_object_count(green)>=1){
+             green_time();
+             printf("green\n");
+         }
+            else{
+             if(get_object_count(orange)>=1){
+                 orange_time();
+                printf("orange\n");
+             }
+            }
+        }
+        
+       
+    
+    }
+}    
