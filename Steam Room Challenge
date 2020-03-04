@@ -1,0 +1,446 @@
+#include <kipr/botball.h>
+int l_motor = 3;
+int r_motor = 0;
+int speed = 50; 
+int speed2 = 100;
+int veer = 15;
+int pause = 500;
+int pause2 = 1000;
+int pause3 = 200;
+int pause4 = 2000;
+int pause5 = 1300;
+int pause6 = 1100;
+int pause7 = 675;
+int pause8 = 260;
+int pause9 = 3000;
+int pause10 = 2300;
+int eye = 3;
+int grabber = 0;
+int bottom_eye = 0;
+int bottom_eye_side = 5;
+int front_eye = 2;
+int side_eye = 1;
+int search = 2040;
+int search2 = 650;
+int open_hand = 1830;
+int open_hand2 = 2047;
+int hand_closed = 1344;
+int marker = 3700;
+int marker2 = 2500;
+int marker3 = 1500;
+int marker4 = 2450;
+int marker5 = 2915;
+int marker6 = 2800;
+int marker7 = 3800;
+int marker8 = 2700;
+int marker9 = 675;
+int marker10 = 340;
+int marker11 = 2200;
+int marker12 = 2625;
+int fire;
+int red = 0;
+int yellow = 1;
+int truck = 2;
+int counter = 0;
+
+void forward(){
+   motor(l_motor,speed);
+   motor(r_motor,speed);
+}
+
+void backwards(){
+   motor(l_motor,-speed);
+   motor(r_motor,-speed); 
+}
+
+void l_turn(){
+   motor(l_motor, -speed);
+   motor(r_motor, speed);
+}
+void l_turn2(){
+    motor(l_motor, speed);
+}
+void l_turn3(){
+    motor(l_motor, -speed);
+}
+void r_turn(){
+   motor(l_motor,speed);
+   motor(r_motor,-speed);
+}
+void r_turn2(){
+    motor(r_motor, speed);
+}
+void r_veer(){
+    motor(l_motor,veer);
+    motor(r_motor,speed);
+}
+void l_veer(){
+    motor(l_motor,speed);
+    motor(r_motor,veer);
+}
+void grab(){
+    enable_servos();
+    set_servo_position(grabber, open_hand);
+    msleep(pause);
+    set_servo_position(grabber, hand_closed);
+    msleep(pause);
+}
+void look(){
+    enable_servos();
+    set_servo_position(eye,search);
+    msleep(pause);
+}
+void find_line(){
+   while(analog(bottom_eye)<marker2){
+      forward();
+      printf("White\n");
+    }
+    ao();
+    msleep(pause3);
+    while(analog(bottom_eye)>marker2){
+     forward();
+     printf("Black\n");
+    }
+    ao();
+    msleep(pause3);
+    while(analog(bottom_eye)<marker){
+     forward();
+     printf("White\n");
+    }
+    ao();
+    msleep(pause3);
+    while(analog(bottom_eye)>marker){
+     forward();
+     printf("Black\n");
+    }
+    ao();
+    msleep(pause3);
+    while(analog(bottom_eye_side)>marker){
+        l_turn();
+        printf("left Turn\n");
+    }
+    ao();
+    msleep(pause3);
+    forward();
+    msleep(pause5);
+    while(analog(bottom_eye)<marker){
+        l_turn();
+    	printf("left turn 2\n");
+}
+    ao();
+    while(analog(bottom_eye_side)>marker){
+        l_turn();
+    }
+    ao();
+    msleep(pause3);
+}
+void follow_line(){
+   while(analog(bottom_eye_side)<marker){
+        if(analog(bottom_eye)<marker){
+         l_veer();  
+         printf("left veer\n");
+        }
+            if(analog(bottom_eye)>marker){
+             r_veer();
+                printf("right veer\n");
+            }
+    }
+    ao();
+    msleep(pause); 
+}
+void check_building(){
+    while(1){
+        camera_update();
+       if(get_object_count(yellow)>0){
+       	if(get_object_count(red)>0){
+           printf("fire\n");
+           fire=1;
+           break;
+       }   
+       }
+        else{
+            printf("no fire\n");
+            fire=0;
+            break;
+        }
+    }
+    camera_close();
+}
+void clear(){
+    forward();
+        printf("forward\n");
+       msleep(pause2);
+       backwards();
+         printf("backwards\n");
+       msleep(pause);
+       r_turn2();
+         printf("rturn\n");
+       msleep(pause3);
+       enable_servos();
+       set_servo_position(grabber, open_hand);
+       msleep(pause);
+}
+void oh_no_fire(){
+    printf("oh no fire\n");
+    while(analog(bottom_eye_side)>marker2){
+        l_turn2();
+        printf("on black\n");
+    }
+    ao();
+    while(analog(bottom_eye_side)<marker){
+        l_turn2();
+        printf("on white\n");
+    }
+    ao();
+    while(analog(bottom_eye_side)>marker2){
+        forward();
+    	printf("on black\n");
+    }
+    ao();
+    while(analog(bottom_eye)>marker3){
+        r_turn2();
+        printf("1\n");
+    }
+    while(analog(bottom_eye_side)<marker2){
+        r_turn2();
+        printf("2\n");
+    }
+    while(analog(bottom_eye_side)>marker2){
+        r_turn2();
+        printf("3\n");
+    }
+    while(analog(bottom_eye_side)<marker2){
+       r_turn2(); 
+        printf("4\n");
+        forward();
+        msleep(pause2);
+        if(analog(bottom_eye)<marker){
+        printf("drop\n");
+       		enable_servos();
+       		set_servo_position(grabber, open_hand);
+            disable_servos(); 
+               break; 
+    }
+    }
+    while(analog(bottom_eye)<marker2){
+        backwards();
+    }
+     while(analog(bottom_eye)>marker2){
+        backwards();
+    }
+    backwards();
+    msleep(pause2);
+    l_turn();
+    msleep(pause10);
+    enable_servos();
+       set_servo_position(grabber, open_hand2);
+        msleep(pause);
+       disable_servos();
+    forward();
+    msleep(pause4);
+    while(analog(front_eye)<marker8){
+     printf("distance=%d\n",analog(front_eye));
+     forward();
+    }
+    ao();
+    msleep(pause3);
+     while(analog(front_eye)>marker12){
+    backwards();
+     }
+   while(analog(side_eye)<marker5){
+       r_turn();
+   }
+    r_turn();
+    msleep(pause7);
+   while(analog(bottom_eye_side)<marker){
+    forward();   
+   }
+    while(analog(front_eye)<marker2){
+     forward();
+    }
+    ao();
+    msleep(pause);
+enable_servos();
+     set_servo_position(grabber, hand_closed);
+        msleep(pause);
+    while(analog(bottom_eye)<marker2){
+       backwards(); 
+        printf("backwards\n");
+    }
+	while(analog(bottom_eye)>marker2){
+       r_turn(); 
+         printf("rturn\n");
+    }
+while(analog(bottom_eye)<marker2){
+       r_turn(); 
+     printf("rturn\n");
+    }
+while(analog(bottom_eye)>marker2){
+       forward(); 
+     printf("forward\n");
+    }
+while(analog(bottom_eye)<marker2){
+       forward(); 
+     printf("forward\n");
+    }
+r_turn();
+    printf("rturn\n");
+msleep(pause2);
+forward();
+    printf("forward\n");
+msleep(pause2);
+    while(analog(bottom_eye)<marker2){
+       forward(); 
+     printf("forward\n");
+    }
+    l_turn();
+    msleep(pause2);
+    forward();
+    msleep(pause2);
+disable_servos();
+}
+
+
+
+
+void no_fire_truck(){
+    backwards();
+    msleep(pause4);
+    while(1){
+     if(analog(bottom_eye)>marker){
+     printf("backwards\n");
+     backwards();
+     }
+     break;
+    }
+    ao();
+    msleep(pause3);
+    while(1){
+     if(analog(bottom_eye_side)>marker){
+     printf("back\n");
+     backwards();
+    }
+        break;
+    }
+    ao();
+    msleep(pause3);
+     while(analog(bottom_eye_side)<marker){
+     printf("r_turn\n");
+     l_turn();
+     break;
+     }
+    l_turn();
+    msleep(pause2);
+    enable_servos();
+       set_servo_position(grabber, open_hand2);
+        msleep(pause);
+       disable_servos();
+    forward();
+    msleep(pause4);
+    while(analog(front_eye)<marker8){
+     printf("distance=%d\n",analog(front_eye));
+     forward();
+    }
+    ao();
+    msleep(pause3);
+     while(analog(front_eye)>marker12){
+    backwards();
+     }
+   while(analog(side_eye)<marker5){
+       r_turn();
+   }
+    r_turn();
+    msleep(pause7);
+   while(analog(bottom_eye_side)<marker){
+    forward();   
+   }
+    while(analog(front_eye)<marker2){
+     forward();
+    }
+    ao();
+    msleep(pause);
+   enable_servos();
+     set_servo_position(grabber, hand_closed);
+        msleep(pause);
+    while(analog(bottom_eye)<marker2){
+        backwards();
+        printf("1\n");
+    }
+     while(analog(bottom_eye)>marker2){
+        backwards();
+         printf("3\n");
+    }
+     while(analog(bottom_eye)<marker2){
+        backwards();
+         printf("4\n");
+    }
+    r_turn();
+    printf("5\n");
+    msleep(pause2);
+    printf("6\n");
+    forward();
+    printf("7\n");
+    msleep(pause9);
+    printf("8\n");
+    forward();
+    printf("9\n");
+    msleep(pause9);
+    printf("10\n");
+    l_veer();
+    printf("11\n");
+    msleep(pause9);
+    printf("12\n");
+       while (analog(bottom_eye)>marker2){
+    forward();
+    }
+    ao();
+    msleep(pause3);
+    while (analog(bottom_eye)<marker2){
+    r_veer();
+    }
+     while (analog(front_eye)<marker4){
+    forward();
+    }
+    
+void get_data(){
+    while(counter <12){
+     camera_update();
+    printf("numberofyellow=%d\n",get_object_count(yellow));
+    printf("numberoforange=%d\n",get_object_count(red));
+    msleep(50);
+    counter=counter + 1;
+    }
+    counter = 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+int main()
+{
+    wait_for_light(3);
+    shut_down_in(120.0);    
+    grab();
+    find_line();
+    follow_line();
+    camera_open();
+    get_data();
+    check_building();
+   while(fire==1){
+       oh_no_fire();
+       break;
+   }
+    while(fire==0){
+       clear();
+        no_fire_truck();
+       break;
+    }
+    return 0;
+}
