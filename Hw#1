@@ -1,4 +1,4 @@
-//Funtion Definintions// 
+//Declared Variables// 
 int l_motor = 0;
 int r_motor = 2;
 int speed = 50;
@@ -7,7 +7,7 @@ int l_bump = 8;
 int r_bump = 9;  
 int pause = 1000;
  
-
+//Defined Functions// 
 void forward(){
   motor(l_motor,speed);//moves both motors forward
   motor(r_motor,speed);
@@ -27,14 +27,16 @@ int main()
 	
 	while (digital(r_bump)==0){ //Bot moves forward until the right senor activates
 		forward();
-		msleep(pause);
-		
-		if (digital(r_bump)==1){//When the right sensor is activated bot turns right 
-			r_turn();
 		}
-		if ( digital(l_bump)==1){//When the left sensor activates bot stops completley 
-			msleep(pause);
+	while(digital(r_bump)==1){//When the right sensor is activated bot turns right 
+			r_turn();
+		
+		if ( digital(l_bump)==1){//When the left sensor activates bot stops completly 
 			ao();
+			msleep(pause);
+			
 		}
 	}
+	ao();
+	return 0;
 	}
