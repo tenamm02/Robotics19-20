@@ -1,0 +1,80 @@
+// Created on Mon March 26 2020//
+//Variables Declared//
+int l_motor = 0;
+int r_motor = 2;
+int speed = 50;
+int right_eye = 6;
+int right_eye_side = 2;
+int left_eye_side = 0;
+int left_eye = 5;
+int pause =500;
+int veer = 10;
+int wall = 400;
+int line = 800;
+int wall2 = 400;
+int middle_eye = 1;
+int no_line = 0;
+int speed2 = 30;
+//Function Defenitions//
+void forward(){//go forward
+   motor(l_motor,speed);
+   motor(r_motor,speed);
+}
+void r_veer(){//right veer
+    motor(l_motor,speed);
+    motor(r_motor,veer);
+}
+void l_veer(){//right veer
+    motor(l_motor,veer);
+    motor(r_motor,speed);
+}
+void r_turn(){ //right turn
+   motor(l_motor,speed);
+   motor(r_motor,-speed);
+   msleep(pause);
+}
+void l_turn(){ //left turn
+   motor(l_motor,-speed);
+   motor(r_motor,speed);
+   msleep(pause);
+}
+void l_turn2(){ // less of a left turn 
+   motor(l_motor,-speed2);
+   motor(r_motor,speed2);
+   msleep(pause);
+}
+
+int main(){
+while(analog(left_eye_side)>wall){//makes the bot follow the wall, once it reaches the wall it breaks out of the loop
+
+	if (analog(right_eye_side)>wall){
+	r_veer();
+	}	
+	if (analog(right_eye_side)<wall){
+	l_veer();
+	}	
+	if(analog(middle_eye)<wall){
+		break;
+	}
+}
+l_turn2();
+forward();
+	
+while(analog(right_eye)==no_line){//has the bot follow the line, once it reaches the wall it breaks out of the loop
+	forward();
+	if (analog(left_eye)>line){
+		printf("right veer\n");
+	r_veer();
+	}	
+	if (analog(left_eye)<line){
+		printf("left veer\n");
+	l_veer();
+	}
+	if(analog(middle_eye)<wall2){
+		printf("stopping\n");
+		break;
+	msleep(pause);
+	ao();
+	}
+}
+}
