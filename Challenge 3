@@ -8,13 +8,17 @@ int right_eye_side = 2;
 int left_eye_side = 0;
 int left_eye = 5;
 int pause =500;
-int veer = 10;
+int veer = 25;
 int wall = 400;
 int line = 800;
-int wall2 = 400;
+int wall2 = 250;
 int middle_eye = 1;
 int no_line = 0;
-int speed2 = 30;
+int speed2 = 60;
+int l_bump = 8;
+int r_bump = 9;
+int veer2 = 40;
+int speed3 = 0;
 //Function Defenitions//
 void forward(){//go forward
    motor(l_motor,speed);
@@ -24,7 +28,7 @@ void r_veer(){//right veer
     motor(l_motor,speed);
     motor(r_motor,veer);
 }
-void l_veer(){//right veer
+void l_veer(){//left veer
     motor(l_motor,veer);
     motor(r_motor,speed);
 }
@@ -43,38 +47,40 @@ void l_turn2(){ // less of a left turn
    motor(r_motor,speed2);
    msleep(pause);
 }
-
+void r_veer2(){//right veer
+    motor(l_motor,speed);
+    motor(r_motor,veer2);
+}
 int main(){
 while(analog(left_eye_side)>wall){//makes the bot follow the wall, once it reaches the wall it breaks out of the loop
 
-	if (analog(right_eye_side)>wall){
+	if (analog(right_eye_side)>wall){//when the right sensor is greater than the value it veers right 
 	r_veer();
 	}	
-	if (analog(right_eye_side)<wall){
+	if (analog(right_eye_side)<wall){//when the right sensor is less than the value it veers left
 	l_veer();
 	}	
-	if(analog(middle_eye)<wall){
+	if(analog(middle_eye)<wall2){// when the middle sensor sees the wall it breaks the loop 
 		break;
 	}
 }
 l_turn2();
 forward();
 	
-while(analog(right_eye)==no_line){//has the bot follow the line, once it reaches the wall it breaks out of the loop
+while(digital(l_bump)==no_line){//this loop is dependant on the left bump sensor
 	forward();
-	if (analog(left_eye)>line){
+	if (analog(left_eye)>line){//when the left tophat sensor is greater than the value of line it veers right
 		printf("right veer\n");
-	r_veer();
+	r_veer2();
 	}	
-	if (analog(left_eye)<line){
+	if (analog(left_eye)<line){// when the left tophat sensor is less than the value of the line it veers left 
 		printf("left veer\n");
 	l_veer();
 	}
-	if(analog(middle_eye)<wall2){
+	if(analog(middle_eye)<wall2){//when the middle sensor sees the wall it breaks the loop 
 		printf("stopping\n");
 		break;
-	msleep(pause);
-	ao();
 	}
 }
+ao();
 }
