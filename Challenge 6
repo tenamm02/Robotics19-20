@@ -1,0 +1,78 @@
+//Created on Mon March 26 2020//
+//Variables Declared//
+int l_motor = 0;
+int r_motor = 2;
+int speed = 50;
+int right_eye = 6;
+int right_eye_side = 2;
+int left_eye_side = 0;
+int left_eye = 5;
+int pause =500;
+int veer = 25;
+int wall = 400;
+int line = 700;
+int wall2 = 190;
+int middle_eye = 1;
+int no_line = 0;
+int speed2 = 60;
+int l_bump = 8;
+int r_bump = 9;
+int veer2 = 30;
+int speed3 = 0;
+int wall3 = 800;
+int speed4 = 45;
+//Function Defenitions//
+void forward(){//go forward
+   motor(l_motor,speed);
+   motor(r_motor,speed);
+}
+void backwards(){//go forward
+   motor(l_motor,-speed);
+   motor(r_motor,-speed);
+}
+void r_veer(){//right veer
+    motor(l_motor,speed);
+    motor(r_motor,veer);
+}
+void l_veer(){//left veer
+    motor(l_motor,veer);
+    motor(r_motor,speed);
+}
+void r_turn(){ //right turn
+   motor(l_motor,speed);
+   motor(r_motor,-speed);
+   msleep(pause);
+}
+void l_turn(){ //left turn
+   motor(l_motor,-speed);
+   motor(r_motor,speed);
+   msleep(pause);
+}
+void l_turn2(){ // less of a left turn 
+   motor(l_motor,-speed2);
+   motor(r_motor,speed2);
+   msleep(pause);
+}
+void r_veer2(){//right veer
+    motor(l_motor,speed);
+    motor(r_motor,veer2);
+}
+void l_veer2(){//left veer 2
+    motor(l_motor,veer2);
+    motor(r_motor,speed);
+}
+void l_turn3(){ // less of a left turn 
+   motor(l_motor,-speed4);
+   motor(r_motor,speed4);
+   msleep(pause);
+}
+int main(){
+
+ for (int driver =1; driver<= 6; driver++){
+	 printf("driver is %d\n", driver);
+	 forward();
+	 msleep(pause);
+	 l_turn();
+ }
+ 
+}
